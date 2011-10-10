@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<jnlp codebase="" href="launch.jnlp" spec="1.0+">
+    <information>
+        <title>FileSearcherWS</title>
+        <vendor>jonb</vendor>
+        <homepage href=""/>
+        <description>FileSearcherWS</description>
+        <description kind="short">FileSearcherWS</description>
+        
+        
+    </information>
+    <update check="always"/>
+    <security>
+<all-permissions/>
+</security>
+    <resources>
+        <j2se version="1.6+"/>
+        <jar href="FileSearcherWS.jar" main="true"/>
+        
+        
+    <jar href="lib/swing-layout-1.0.4.jar"/>
+</resources>
+    <application-desc main-class="com.javac.filesearcher.App">
+        
+    </application-desc>
+</jnlp>

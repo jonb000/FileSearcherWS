@@ -15,14 +15,15 @@ import javax.swing.DefaultListModel;
  * subdirectories and to ignore links.
  * 
  * The application can be executed from the command line or has
- * a built-in GUI
+ * a built-in GUI.
+ * 
  * 
  * @author Jon Batcheller jonb@javac.com
  *
  */
 public class App {
 
-    public static final String USAGE_MESSAGE = ""
+    private static final String USAGE_MESSAGE = ""
             + "Usage: [options] path regex\n"
             + "-c     (search file contents)\n"
             + "-h     (print this message)\n"
@@ -57,7 +58,7 @@ public class App {
      * from a browser as a double-click on the jar or put on a web server
      * as a web-start app
      * 
-     * @param args - command line arguments
+     * @param args invoke with -h for full description of command line args
      */
     public static void main(String[] args) {
         try {

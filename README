@@ -1,6 +1,6 @@
 
 Recursive file search engine, that will search for either
-filenames or with content flag set, a matchingn string in
+filenames or with content flag set, a matching string in
 the file contents.
 
 The searched for string is a regular expresses (regex) as

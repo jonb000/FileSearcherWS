@@ -74,6 +74,8 @@ public class SearchRunner implements Runnable {
     }
 
     /**
+     * 
+     * return true, the search will continue through subdirectories
      * @return true, the search will continue through subdirectories
 
      */
@@ -144,7 +146,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     *  
+     *  return the currently set filesystem path where searching begins
      * @return the currently set filesystem path where searching begins
      */
     public String getStartPath() {
@@ -179,7 +181,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * 
+     * return the current data model object
      * @return the current data model object
      */
     public DataModelIfc getDataModel() {
@@ -194,7 +196,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * 
+     * return Current number of directories searched
      * @return Current number of directories searched
      */
     public int getDirCount() {
@@ -202,7 +204,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * 
+     * return The maximum number of bytes a file can be to be content searched
      * @return The maximum number of bytes a file can be to be content searched
      */
     public int getMaxContentFileSize() {
@@ -219,7 +221,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     *
+     *return current number of files examined for a match
      * @return current number of files examined for a match
      */
     public int getFileCount() {
@@ -227,7 +229,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * 
+     * return current number of matches found
      * @return current number of matches found
      */
     public int getMatchCount() {
@@ -270,7 +272,7 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * 
+     * return true if the searcher thread is executing
      * @return true if the searcher thread is executing
      */
     public boolean isRunning() {

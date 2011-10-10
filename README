@@ -8,12 +8,8 @@ define by the Java Pattern class.  Pretty standard.
 
 Command line arguments can be seen by executing the jar:
         $ java -jar FileSearcherWS.jar -h
-with the jar file in your local directory.
+with the jar file and lib tree in your local directory.
 
-The GUI can be invoked by double clicking on the jar in
-your OS, or invoking from the command line with no
-arguments, or by running the launch.jnlp file
-        $ java -jar FileSearcherWS.jar
 
 The program is currently available as a web start application
 on the internet.  When running this URL, should 

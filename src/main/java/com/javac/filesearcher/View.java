@@ -23,20 +23,24 @@ import javax.swing.ListModel;
 import javax.swing.ProgressMonitor;
 
 /**
- *
+ * Swing Frame to be the view for the SearchRunner controller.
+ * Sets SearchRunner parameters and starts the SearchRunner.
+ * Receives ChangeEvents from the SearchRunner to update the view.
  * @author jonb
  */
 public class View extends javax.swing.JFrame {
 
     private final String SEARCH_BUTTON_LABEL = "Search";
     private final String STOP_BUTTON_LABEL = "STOP";
-    private final Color RUN_COLOR = Color.RED;
-    private Color buttonBackgroundColor;
+
     /**
      * Provides help location on regular expression patterns
      */
     private final String PATTERN_URI = "http://download.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html";
-    //
+    /**
+     * Controller that is given parameter information from the GUI
+     * we attach a listener to for update events.
+     */
     private final SearchRunner searcher;
     /**
      * General use file chooser - instantiated here and not destroyed
@@ -51,9 +55,7 @@ public class View extends javax.swing.JFrame {
 
         initComponents();
 
-        buttonBackgroundColor = searchBtn.getBackground();
-
-        //save our searcher
+        //save our searcher controller
         this.searcher = sr;
         //
         //Assign a display data model to the JList
@@ -257,6 +259,11 @@ public class View extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Basic regex help by showing the Pattern class
+     * 
+     * @param evt 
+     */
     private void helpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpBtnActionPerformed
         try {
             Desktop.getDesktop().browse(new URI(PATTERN_URI));
@@ -264,14 +271,27 @@ public class View extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_helpBtnActionPerformed
 
+    /**
+     * Simple terminate on exit
+     * @param evt 
+     */
     private void exitBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitBtnActionPerformed
         System.exit(-1);
     }//GEN-LAST:event_exitBtnActionPerformed
 
+    /**
+     * Begin the search
+     * @param evt 
+     */
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         doSearch();
     }
 
+    /**
+     * Dual function, if we are currently in a search, stop, or if not, 
+     * update the parameters and begin the search.  Called by both the search
+     * button and the action of the regex field.
+     */
     private void doSearch() {
         if (searcher.isRunning()) {
             searcher.stop();
@@ -309,6 +329,12 @@ public class View extends javax.swing.JFrame {
         updateActiveSearchLabels();
     }//GEN-LAST:event_searchBtnActionPerformed
 
+    /**
+     * For more advanced desktops like OSX, will permit the opening of the
+     * default tool on the selected path
+     * 
+     * @param evt 
+     */
     private void resultListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_resultListValueChanged
         try {
             Desktop.getDesktop().browse(new URI("file://" + resultList.getSelectedValue().toString()));
@@ -316,6 +342,11 @@ public class View extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_resultListValueChanged
 
+    /**
+     * Open a file chooser and set the parameter in the searcher
+     * 
+     * @param evt 
+     */
     private void pathFieldMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pathFieldMouseClicked
         searcher.getDataModel().clear();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -333,10 +364,18 @@ public class View extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_pathFieldMouseClicked
 
+    /**
+     * A return <CR> in the field invokes the search
+     * 
+     * @param evt 
+     */
     private void regexFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regexFieldActionPerformed
         doSearch();
     }//GEN-LAST:event_regexFieldActionPerformed
 
+    /**
+     * Based on the status of the search, updates the UI labels
+     */
     private void updateActiveSearchLabels() {
         if (searcher.isRunning()) {
             searchBtn.setText(STOP_BUTTON_LABEL);

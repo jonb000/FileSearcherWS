@@ -22,9 +22,8 @@ public interface DataModelIfc<T> {
      */
     public T get(int i);
 
-    /**
-     * Return the number of elements in the store
-     * @return 
+    /** 
+     * @return the number of elements in the store
      */
     public int size();
 
@@ -35,7 +34,7 @@ public interface DataModelIfc<T> {
 
     /**
      * For GUI JList purposes, return the store as a ListModel
-     * @return 
+     * @return the datastore as a ListModel
      */
     public ListModel getAsListModel();
 }

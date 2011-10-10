@@ -74,8 +74,8 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * If true, the search will continue through subdirectories
-     * @return 
+     * @return true, the search will continue through subdirectories
+
      */
     public boolean isRecurseSubdirs() {
         return recurseSubdirs;
@@ -94,7 +94,7 @@ public class SearchRunner implements Runnable {
      * If true, the contents of the file are searched for the "regex", not
      * the  filesystem pathnames
      * 
-     * @return 
+     * @return true if file contents are to be examined
      */
     public boolean isSearchFileContents() {
         return searchFileContents;
@@ -144,8 +144,8 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * Return the currently set filesystem path to begin searching
-     * @return 
+     *  
+     * @return the currently set filesystem path where searching begins
      */
     public String getStartPath() {
         return startPath;
@@ -179,8 +179,8 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * Return the passed in data model object
-     * @return 
+     * 
+     * @return the current data model object
      */
     public DataModelIfc getDataModel() {
         return dataModel;
@@ -218,10 +218,18 @@ public class SearchRunner implements Runnable {
         this.maxContentFileSize = maxContentFileSize;
     }
 
+    /**
+     *
+     * @return current number of files examined for a match
+     */
     public int getFileCount() {
         return fileCount;
     }
 
+    /**
+     * 
+     * @return current number of matches found
+     */
     public int getMatchCount() {
         return dataModel.size();
     }
@@ -262,9 +270,8 @@ public class SearchRunner implements Runnable {
     }
 
     /**
-     * Returns true if the searcher thread is executing
      * 
-     * @return 
+     * @return true if the searcher thread is executing
      */
     public boolean isRunning() {
         return isRunning;
@@ -272,8 +279,8 @@ public class SearchRunner implements Runnable {
     
     /**
      * Wraps the getCanonicalPath exception
-     * @param f
-     * @return 
+     * @param f - file to get the path of
+     * @return the canonical path if available
      */
     
     public String getPath(File f) {
@@ -284,6 +291,13 @@ public class SearchRunner implements Runnable {
         }
     }
 
+    /**
+     * Converts files, smaller than the maxContentFileSize into a String for
+     * matching purposes.
+     * @param file
+     * @return a String matching the file contents
+     * @throws Exception 
+     */
     public String convertToString(File file) throws Exception {
         //for space and time, we don't search content of files bigger than this
         if (file.length() > maxContentFileSize ) return "";
@@ -309,6 +323,15 @@ public class SearchRunner implements Runnable {
         return result.toString();
     }
 
+    
+
+    /**
+     * Examine the string looking for a match with the configured
+     * searchString.
+     * 
+     * @param val
+     * @return true if  match found
+     */
     private boolean checkForMatch(String val) {
 
         //don't bother if nothing there
@@ -324,7 +347,7 @@ public class SearchRunner implements Runnable {
             Matcher m2 = p2.matcher(val);
             result = m2.matches();
 
-        } else {  //straight string match
+        } else {  //straight string compare
             if (ignoreCase) {
                 val = val.toLowerCase();
                 searchString = searchString.toLowerCase();
@@ -334,19 +357,23 @@ public class SearchRunner implements Runnable {
         return result;
     }
 
+    /**
+     * Search the directory "path" for files, and examine those filesnames
+     * for a match with the "searchString".  Keep counts of number of files
+     * examined and directories examined.  If the "searchFileContents" flag
+     * is set, the contents, NOT the file names are examined for a match.
+     * 
+     * Change events are fired when a match is found and when a directory is
+     * traversed.  
+     * 
+     * @param path 
+     */
     private void traverseAndMatch(String path) {
 
         File dir = new File(path);
 
         //if not a directory, we are done
-        if (dir.isDirectory()) {
-            //see if we have been here before, due to a circular linkage.
-            if (visitedList.containsKey(getPath(dir))) {
-                return;
-            }
-            visitedList.put(getPath(dir), true);
-            dirCount++;
-            fireUiUpdateEvent();
+        if (addNewDirectory(dir)) {
 
             //iterate through this directory's files
             File[] files = dir.listFiles();
@@ -395,6 +422,24 @@ public class SearchRunner implements Runnable {
     private void addMatch(String path) {
         dataModel.add(path);
         fireChangeEvent(UI_UPDATE);
+    }
+    
+    /**
+     * Track directories to avoid loops.  Fire an event on each new directory
+     * @param dir
+     * @return true if a new directory
+     */
+    private boolean addNewDirectory(File dir) {
+        if (!dir.isDirectory()) return false;
+        
+        //see if we have been here before, due to a circular linkage.
+        if (visitedList.containsKey(getPath(dir))) {
+            return false;
+        }
+        visitedList.put(getPath(dir), true);
+        dirCount++;
+        fireChangeEvent(UI_UPDATE);
+        return true;
     }
 
     /**

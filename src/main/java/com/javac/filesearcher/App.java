@@ -23,7 +23,7 @@ import javax.swing.DefaultListModel;
  */
 public class App {
 
-    private static final String USAGE_MESSAGE = ""
+    private static final String USAGE_MESSAGE = "\n"
             + "Usage: [options] path regex\n"
             + "-c     (search file contents)\n"
             + "-h     (print this message)\n"
@@ -64,7 +64,13 @@ public class App {
         try {
             int numArgs = args.length;
             if (numArgs == 0) {
-                //use the Swing GUI, 
+                //use the Swing desktop GUI, kludgy check if we have the library
+                try {
+                    new org.jdesktop.layout.LayoutStyle();
+                } catch (NoClassDefFoundError ex) {
+                    System.err.println(USAGE_MESSAGE);
+                    return;
+                }
                 java.awt.EventQueue.invokeLater(new Runnable() {
 
                     public void run() {

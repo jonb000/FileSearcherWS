@@ -19,6 +19,7 @@
         
         
     <jar href="lib/swing-layout-1.0.4.jar"/>
+<jar href="lib/beansbinding-1.2.1.jar"/>
 </resources>
     <application-desc main-class="com.javac.filesearcher.App">
         

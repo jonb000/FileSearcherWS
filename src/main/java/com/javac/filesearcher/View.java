@@ -32,7 +32,6 @@ public class View extends javax.swing.JFrame {
 
     private final String SEARCH_BUTTON_LABEL = "Search";
     private final String STOP_BUTTON_LABEL = "STOP";
-
     /**
      * Provides help location on regular expression patterns
      */
@@ -122,8 +121,13 @@ public class View extends javax.swing.JFrame {
 
         searchContentsCheckbox.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
         searchContentsCheckbox.setText("Search File Contents");
+        searchContentsCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchContentsCheckboxActionPerformed(evt);
+            }
+        });
 
-        ignoreCaseCheckbox.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        ignoreCaseCheckbox.setFont(new java.awt.Font("Lucida Grande", 0, 14));
         ignoreCaseCheckbox.setText("Case  Insensitive");
 
         pathField.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -176,7 +180,7 @@ public class View extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(329, Short.MAX_VALUE)
+                .addContainerGap(429, Short.MAX_VALUE)
                 .add(searchBtn)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(exitBtn))
@@ -191,11 +195,10 @@ public class View extends javax.swing.JFrame {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        recurseCheckbox.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        recurseCheckbox.setFont(new java.awt.Font("Lucida Grande", 0, 14));
         recurseCheckbox.setSelected(true);
         recurseCheckbox.setText("Recurse Subdirectories");
 
-        useRegexCheckbox.setSelected(true);
         useRegexCheckbox.setText("Use Regex");
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
@@ -206,7 +209,7 @@ public class View extends javax.swing.JFrame {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel1Layout.createSequentialGroup()
-                        .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)
+                        .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
                         .addContainerGap())
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
@@ -221,7 +224,7 @@ public class View extends javax.swing.JFrame {
                                 .add(useRegexCheckbox)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(helpBtn))
-                            .add(pathField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
+                            .add(pathField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
                             .add(recurseCheckbox)
                             .add(searchContentsCheckbox))
                         .add(20, 20, 20))))
@@ -303,7 +306,7 @@ public class View extends javax.swing.JFrame {
                 popupMsg("Error in Start Location", "Start Location not specified.");
                 return;
             }
-            
+
             //configure the searcher
             try {
                 searcher.setSearchString(regexField.getText(), useRegexCheckbox.isSelected());
@@ -374,6 +377,22 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_regexFieldActionPerformed
 
     /**
+     * Returns the get contents message, including the max file size currently set
+     * @return 
+     */
+    private String getContentsNote() {
+        return "Contents Searching: Only files with a length less than \n"
+                + searcher.getMaxContentFileSize() / 1024000 + "MB are examined.  If using a regular expression,"
+                + "\nthe expression must match an entire line of the file."
+                + "\n\nFor example, to search for the word 'foo' use .*foo.*\n\n";
+    }
+    private void searchContentsCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchContentsCheckboxActionPerformed
+        if (this.searchContentsCheckbox.isSelected()) {
+            this.popupMsg("Search Contents Note", getContentsNote());
+        }
+    }//GEN-LAST:event_searchContentsCheckboxActionPerformed
+
+    /**
      * Based on the status of the search, updates the UI labels
      */
     private void updateActiveSearchLabels() {
@@ -382,7 +401,7 @@ public class View extends javax.swing.JFrame {
         } else {
             searchBtn.setText(SEARCH_BUTTON_LABEL);
         }
-            listPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(searcher.getDataModel().size() + " Matched - Searched " + searcher.getFileCount() + " Files, " + searcher.getDirCount() + " Directories"));
+        listPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(searcher.getDataModel().size() + " Matched - Searched " + searcher.getFileCount() + " Files, " + searcher.getDirCount() + " Directories"));
 
     }
 

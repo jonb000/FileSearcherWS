@@ -46,14 +46,13 @@ public class SearchRunner implements Runnable {
     private String searchString;
     private int fileCount = 0;
     private int dirCount = 0;
-    private int maxContentFileSize = 0xFFFFF; 
+    private int maxContentFileSize = 0xFFFFF;
     //
     /**
      * With the possibility of circular linkages, we maintain a visited
      * list to avoid infinite recursion
      */
-    HashMap<String,Boolean> visitedList = new HashMap<String,Boolean>();
-    
+    HashMap<String, Boolean> visitedList = new HashMap<String, Boolean>();
     /** Datastore injected from the constructor
      * 
      */
@@ -77,7 +76,7 @@ public class SearchRunner implements Runnable {
      * 
      * return true, the search will continue through subdirectories
      * @return true, the search will continue through subdirectories
-
+    
      */
     public boolean isRecurseSubdirs() {
         return recurseSubdirs;
@@ -235,8 +234,6 @@ public class SearchRunner implements Runnable {
     public int getMatchCount() {
         return dataModel.size();
     }
-    
-    
 
     /**
      * Begin a threaded search
@@ -278,13 +275,12 @@ public class SearchRunner implements Runnable {
     public boolean isRunning() {
         return isRunning;
     }
-    
+
     /**
      * Wraps the getCanonicalPath exception
      * @param f - file to get the path of
      * @return the canonical path if available
      */
-    
     public String getPath(File f) {
         try {
             return f.getCanonicalPath();
@@ -293,39 +289,7 @@ public class SearchRunner implements Runnable {
         }
     }
 
-    /**
-     * Converts files, smaller than the maxContentFileSize into a String for
-     * matching purposes.
-     * @param file
-     * @return a String matching the file contents
-     * @throws Exception 
-     */
-    public String convertToString(File file) throws Exception {
-        //for space and time, we don't search content of files bigger than this
-        if (file.length() > maxContentFileSize ) return "";
-        
-        StringBuilder result = new StringBuilder();
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new FileReader(file));
-            char[] buf = new char[8192]; //read buffer
-            int r = 0;
-
-            while ((r = reader.read(buf)) != -1) {
-                result.append(buf, 0, r);
-            }
-
-        } finally {
-            if (reader != null) {
-                reader.close();
-            }
-        }
-
-        return result.toString();
-    }
-
-    
+   
 
     /**
      * Examine the string looking for a match with the configured
@@ -355,6 +319,32 @@ public class SearchRunner implements Runnable {
                 searchString = searchString.toLowerCase();
             }
             result = val.contains(searchString);
+        }
+        return result;
+    }
+
+    /**
+     * We read the contents, line by line, for a match.
+     * Ignore massive files.
+     * @param file
+     * @return 
+     */
+    private boolean checkForMatch(File file) throws Exception {
+        boolean result = false;
+        if (file == null || !file.canRead() || file.length() > this.maxContentFileSize) {
+            return false;
+        }
+
+        StringBuilder sbuilder = new StringBuilder();
+        BufferedReader reader = null;
+        reader = new BufferedReader(new FileReader(file));
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            if (checkForMatch(line.trim())) {
+                result = true;
+                break;
+            }
         }
         return result;
     }
@@ -400,7 +390,7 @@ public class SearchRunner implements Runnable {
                         //load the file into a String for matching.
                         //Should this fail, put the failure in the output
                         try {
-                            if (checkForMatch(convertToString(childFile))) {
+                            if (checkForMatch(childFile)) {
                                 addMatch(childFile.getCanonicalPath());
                             }
                         } catch (Exception ex) {
@@ -425,15 +415,17 @@ public class SearchRunner implements Runnable {
         dataModel.add(path);
         fireChangeEvent(UI_UPDATE);
     }
-    
+
     /**
      * Track directories to avoid loops.  Fire an event on each new directory
      * @param dir
      * @return true if a new directory
      */
     private boolean addNewDirectory(File dir) {
-        if (!dir.isDirectory()) return false;
-        
+        if (!dir.isDirectory()) {
+            return false;
+        }
+
         //see if we have been here before, due to a circular linkage.
         if (visitedList.containsKey(getPath(dir))) {
             return false;
@@ -450,8 +442,6 @@ public class SearchRunner implements Runnable {
     private void fireChangeEvent(String eventType) {
         propChangeSupport.firePropertyChange(eventType, 0, fileCount);
     }
-    
-
 
     /**
      * Run the SearchRunner based on configured parameters, placing data in
@@ -460,8 +450,8 @@ public class SearchRunner implements Runnable {
     public void run() {
         try {
             clear();
-                isRunning = true;
-                traverseAndMatch(startPath);
+            isRunning = true;
+            traverseAndMatch(startPath);
         } finally {
             isRunning = false;
             stopRequest = false;
@@ -485,6 +475,4 @@ public class SearchRunner implements Runnable {
         propChangeSupport.removePropertyChangeListener(listener);
 
     }
-
-   
 }
